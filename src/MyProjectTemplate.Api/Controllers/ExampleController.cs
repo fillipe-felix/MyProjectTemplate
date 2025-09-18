@@ -148,7 +148,7 @@ public class ExampleController : ControllerBase
 
         var response = await _mediator.Send(command, cancellationToken);
 
-        return CreatedAtRoute(nameof(GetByIdAsync), new { id = response.Data.id }, response);
+        return CreatedAtRoute(nameof(GetByIdAsync), new { id = response.Data.Id }, response);
     }
 
     /// <summary>

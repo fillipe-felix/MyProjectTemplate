@@ -7,7 +7,7 @@ using MyProjectTemplate.Domain.Enums;
 
 namespace MyProjectTemplate.Application.Example.Commands.UpdateExample;
 
-public class UpdateExampleCommand : IRequest<BaseResult>
+public record UpdateExampleCommand : IRequest<BaseResult>
 {
     public Uuid Id { get; set; }
     public string Name { get; set; } = string.Empty;

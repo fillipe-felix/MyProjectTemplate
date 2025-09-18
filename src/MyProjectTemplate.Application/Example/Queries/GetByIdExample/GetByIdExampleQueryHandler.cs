@@ -51,8 +51,7 @@ public class GetByIdExampleQueryHandler : IRequestHandler<GetByIdExampleQuery, B
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while handling GetByIdExampleQuery for Id: {Id}", request.Id);
-            throw new InternalServerErrorException("An error occurred while retrieving the example");
+            throw;
         }
-
     }
 }

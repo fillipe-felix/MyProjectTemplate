@@ -43,8 +43,7 @@ public class GetAllExampleQueryHandler : IRequestHandler<GetAllExampleQuery, Bas
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while handling GetAllExampleQuery");
-            throw new InternalServerErrorException("An error occurred while retrieving examples");
+            throw;
         }
-
     }
 }

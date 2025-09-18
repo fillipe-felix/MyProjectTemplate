@@ -5,7 +5,7 @@ using MyProjectTemplate.Domain.Enums;
 
 namespace MyProjectTemplate.Application.Example.Commands.CreateExample;
 
-public class CreateExampleCommand : IRequest<BaseResult<CreateExampleResponse>>
+public record CreateExampleCommand : IRequest<BaseResult<CreateExampleResponse>>
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

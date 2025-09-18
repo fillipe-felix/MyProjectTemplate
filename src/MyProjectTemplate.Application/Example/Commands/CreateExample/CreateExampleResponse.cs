@@ -2,4 +2,4 @@
 
 namespace MyProjectTemplate.Application.Example.Commands.CreateExample;
 
-public record CreateExampleResponse(Uuid id);
+public record CreateExampleResponse(Uuid Id);

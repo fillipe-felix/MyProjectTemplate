@@ -55,8 +55,7 @@ public class DeleteExampleCommandHandler : IRequestHandler<DeleteExampleCommand,
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error deleting Example Id={Id}", request?.Id);
-            throw new InternalServerErrorException("An unexpected error occurred while deleting the example.");
+            throw;
         }
-
     }
 }

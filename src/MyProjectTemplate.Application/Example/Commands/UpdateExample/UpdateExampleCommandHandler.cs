@@ -52,8 +52,7 @@ public class UpdateExampleCommandHandler : IRequestHandler<UpdateExampleCommand,
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error updating Example Id={Id}", request.Id);
-            throw new InternalServerErrorException("An unexpected error occurred while updating the example.");
+            throw;
         }
-
     }
 }
