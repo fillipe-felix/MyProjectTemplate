@@ -14,24 +14,23 @@ using MyProjectTemplate.Core.Base;
 
 namespace MyProjectTemplate.Api.Controllers;
 
-
 /// <summary>
-/// Controlador responsável por gerenciar a entidade Example (CRUD).
+/// Controller responsible for managing the Example entity (CRUD).
 /// </summary>
 /// <remarks>
-/// Endpoints expostos:
-/// - GET api/Example/{id}: Obtém um Example pelo identificador.
-/// - GET api/Example: Lista Examples (possível expansão futura para filtros/paginação).
-/// - POST api/Example: Cria um novo Example.
-/// - PUT api/Example/{id}: Atualiza um Example existente.
-/// - DELETE api/Example/{id}: Remove um Example pelo identificador.
+/// Exposed endpoints:
+/// - GET api/Example/{id}: Retrieves an Example by its identifier.
+/// - GET api/Example: Lists Examples (future expansion for filters/pagination).
+/// - POST api/Example: Creates a new Example.
+/// - PUT api/Example/{id}: Updates an existing Example.
+/// - DELETE api/Example/{id}: Removes an Example by its identifier.
 ///
-/// Convenções:
-/// - Todas as respostas são envelopadas por BaseResult ou BaseErrorResult.
-/// - Logs são registrados para eventos relevantes (p. ex., não encontrado, ID inválido).
+/// Conventions:
+/// - All responses are wrapped by BaseResult or BaseErrorResult.
+/// - Logs are recorded for relevant events (e.g., not found, invalid ID).
 /// </remarks>
-/// <response code="400">Requisição inválida. Verifique o corpo e parâmetros.</response>
-/// <response code="404">Recurso não encontrado.</response>
+/// <response code="400">Invalid request. Check the body and parameters.</response>
+/// <response code="404">Resource not found.</response>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -41,10 +40,10 @@ public class ExampleController : ControllerBase
     private readonly ILogger<ExampleController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="ExampleController"/>.
+    /// Initializes a new instance of the <see cref="ExampleController"/> class.
     /// </summary>
-    /// <param name="mediator">O mediator para enviar comandos e queries.</param>
-    /// <param name="logger">O logger para registrar informações.</param>
+    /// <param name="mediator">The mediator to send commands and queries.</param>
+    /// <param name="logger">The logger to record information.</param>
     public ExampleController(IMediator mediator, ILogger<ExampleController> logger)
     {
         _mediator = mediator;
@@ -52,23 +51,23 @@ public class ExampleController : ControllerBase
     }
     
     /// <summary>
-    /// Retorna um Example pelo identificador.
+    /// Returns an Example by its identifier.
     /// </summary>
-    /// <param name="id">Identificador do Example (UUID em string).</param>
-    /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-    /// <returns>Um envelope <see cref="BaseResult{T}"/> contendo <see cref="ExampleDto"/> quando encontrado.</returns>
+    /// <param name="id">Example identifier (UUID as string).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A <see cref="BaseResult{T}"/> envelope containing <see cref="ExampleDto"/> when found.</returns>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Request example:
     /// GET api/Example/8f9e6f1a-2f6c-4f7a-b6f8-2f7c6a9d1e2b
     ///
-    /// Possíveis resultados:
-    /// - 200 OK: Example encontrado e retornado no corpo.
-    /// - 404 NotFound: Example não encontrado para o ID informado.
-    /// - 400 BadRequest: ID inválido ou erro de validação.
+    /// Possible results:
+    /// - 200 OK: Example found and returned in the body.
+    /// - 404 NotFound: Example not found for the provided ID.
+    /// - 400 BadRequest: Invalid ID or validation error.
     /// </remarks>
-    /// <response code="200">Retorna o Example solicitado.</response>
-    /// <response code="404">Quando o Example não é encontrado.</response>
-    /// <response code="400">Quando o ID é inválido ou a requisição é malformada.</response>
+    /// <response code="200">Returns the requested Example.</response>
+    /// <response code="404">When the Example is not found.</response>
+    /// <response code="400">When the ID is invalid or the request is malformed.</response>
     [HttpGet("{id}", Name = nameof(GetByIdAsync))]
     [ProducesResponseType(typeof(BaseResult<ExampleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseResult<ExampleDto>),StatusCodes.Status404NotFound)]
@@ -86,25 +85,25 @@ public class ExampleController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna uma lista de Examples.
+    /// Returns a list of Examples.
     /// </summary>
-    /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-    /// <returns>Um envelope <see cref="BaseResult{T}"/> contendo uma coleção de <see cref="ExampleDto"/>.</returns>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A <see cref="BaseResult{T}"/> envelope containing a collection of <see cref="ExampleDto"/>.</returns>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Request example:
     /// GET api/Example
     ///
-    /// Possíveis resultados:
-    /// - 200 OK: Lista retornada com sucesso (pode estar vazia).
-    /// - 404 NotFound: Nenhum registro encontrado (quando aplicável).
-    /// - 400 BadRequest: Erro de validação.
+    /// Possible results:
+    /// - 200 OK: List returned successfully (may be empty).
+    /// - 404 NotFound: No records found (when applicable).
+    /// - 400 BadRequest: Validation error.
     ///
-    /// Observações:
-    /// - Este endpoint pode ser estendido futuramente para oferecer paginação e filtros.
+    /// Notes:
+    /// - This endpoint may be extended in the future to provide pagination and filters.
     /// </remarks>
-    /// <response code="200">Retorna a lista de Examples.</response>
-    /// <response code="404">Quando não há registros conforme o critério.</response>
-    /// <response code="400">Quando há erro de validação da requisição.</response>
+    /// <response code="200">Returns the list of Examples.</response>
+    /// <response code="404">When no records match the criteria.</response>
+    /// <response code="400">When there is a validation error in the request.</response>
     [HttpGet]
     [ProducesResponseType(typeof(BaseResult<IEnumerable<ExampleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseResult<IEnumerable<ExampleDto>>),StatusCodes.Status404NotFound)]
@@ -118,27 +117,27 @@ public class ExampleController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo Example.
+    /// Creates a new Example.
     /// </summary>
-    /// <param name="command">Dados para criação do Example.</param>
-    /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-    /// <returns>Um envelope <see cref="BaseResult{T}"/> com <see cref="CreateExampleResponse"/> contendo o ID gerado.</returns>
+    /// <param name="command">Data to create the Example.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A <see cref="BaseResult{T}"/> with <see cref="CreateExampleResponse"/> containing the generated ID.</returns>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Request example:
     /// 
     ///     POST api/Example
     ///     Content-Type: application/json
     ///     {
-    ///         "nome": "Meu Example",
-    ///         "descricao": "Descrição do Example"
+    ///         "name": "My Example",
+    ///         "description": "Example description"
     ///     }
     ///
-    /// Possíveis resultados:
-    /// - 201 Created: Example criado com sucesso. O cabeçalho Location aponta para GET api/Example/{id}.
-    /// - 400 BadRequest: Corpo inválido ou erro de validação.
+    /// Possible results:
+    /// - 201 Created: Example created successfully. Location header points to GET api/Example/{id}.
+    /// - 400 BadRequest: Invalid body or validation error.
     /// </remarks>
-    /// <response code="201">Criado com sucesso. Retorna o identificador do recurso.</response>
-    /// <response code="400">Quando o corpo é nulo ou inválido.</response>
+    /// <response code="201">Successfully created. Returns the resource identifier.</response>
+    /// <response code="400">When the body is null or invalid.</response>
     [HttpPost]
     [ProducesResponseType(typeof(BaseResult<CreateExampleResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(BaseErrorResult),StatusCodes.Status400BadRequest)]
@@ -152,34 +151,34 @@ public class ExampleController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um Example existente.
+    /// Updates an existing Example.
     /// </summary>
-    /// <param name="id">Identificador do Example (UUID em string).</param>
-    /// <param name="command">Dados para atualização do Example.</param>
-    /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-    /// <returns>204 No Content em caso de sucesso.</returns>
+    /// <param name="id">Example identifier (UUID as string).</param>
+    /// <param name="command">Data to update the Example.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>204 No Content on success.</returns>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Request example:
     /// 
     ///     PUT api/Example/{id}
     ///     Content-Type: application/json
     ///     {
-    ///         "nome": "Example Atualizado",
-    ///         "descricao": "Descrição atualizada"
+    ///         "name": "Updated Example",
+    ///         "description": "Updated description"
     ///     }
     ///
-    /// Regras:
-    /// - O ID do caminho deve ser um UUID válido. Caso contrário, retorna 400 BadRequest.
-    /// - O ID do comando é definido internamente a partir do parâmetro de rota.
+    /// Rules:
+    /// - The route ID must be a valid UUID. Otherwise, returns 400 BadRequest.
+    /// - The command ID is set internally from the route parameter.
     ///
-    /// Possíveis resultados:
-    /// - 204 No Content: Atualizado com sucesso.
-    /// - 400 BadRequest: ID inválido ou erro de validação dos dados.
-    /// - 404 NotFound: Recurso não existe (quando aplicável no handler).
+    /// Possible results:
+    /// - 204 No Content: Successfully updated.
+    /// - 400 BadRequest: Invalid ID or data validation error.
+    /// - 404 NotFound: Resource does not exist (when applicable in the handler).
     /// </remarks>
-    /// <response code="204">Atualizado com sucesso.</response>
-    /// <response code="400">Quando o ID é inválido ou os dados são inconsistentes.</response>
-    /// <response code="404">Quando o recurso não existe.</response>
+    /// <response code="204">Successfully updated.</response>
+    /// <response code="400">When the ID is invalid or the data is inconsistent.</response>
+    /// <response code="404">When the resource does not exist.</response>
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(BaseResult), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(BaseResult),StatusCodes.Status404NotFound)]
@@ -204,23 +203,23 @@ public class ExampleController : ControllerBase
     }
 
     /// <summary>
-    /// Remove um Example pelo identificador.
+    /// Removes an Example by its identifier.
     /// </summary>
-    /// <param name="id">Identificador do Example (UUID em string).</param>
-    /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-    /// <returns>204 No Content em caso de sucesso.</returns>
+    /// <param name="id">Example identifier (UUID as string).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>204 No Content on success.</returns>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Request example:
     /// DELETE api/Example/{id}
     ///
-    /// Possíveis resultados:
-    /// - 204 No Content: Removido com sucesso.
-    /// - 404 NotFound: Recurso não encontrado.
-    /// - 400 BadRequest: Quando ocorrer falha de validação ou erro de negócio reportado pelo handler.
+    /// Possible results:
+    /// - 204 No Content: Successfully removed.
+    /// - 404 NotFound: Resource not found.
+    /// - 400 BadRequest: When a validation or business error occurs as reported by the handler.
     /// </remarks>
-    /// <response code="204">Removido com sucesso.</response>
-    /// <response code="404">Quando o recurso não é encontrado.</response>
-    /// <response code="400">Quando há falha de validação/negócio.</response>
+    /// <response code="204">Successfully removed.</response>
+    /// <response code="404">When the resource is not found.</response>
+    /// <response code="400">When there is a validation/business failure.</response>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(BaseResult), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(BaseResult),StatusCodes.Status404NotFound)]
