@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Fillipe Soares",
+  "classifications": ["Web", "Clean Architecture", "API"],
+  "identity": "Fillipe.CleanArchitecture.Api",
+  "name": "Clean Architecture API",
+  "shortName": "cleanapi",
+  "sourceName": "MyProjectTemplate",
+  "preferNameDirectory": true,
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "datatype": "string",
+      "description": "Target framework",
+      "defaultValue": "net8.0"
+    }
+  }
+}
