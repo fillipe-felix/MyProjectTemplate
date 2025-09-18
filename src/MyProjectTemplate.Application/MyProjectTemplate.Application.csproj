@@ -21,4 +21,9 @@
       <ProjectReference Include="..\MyProjectTemplate.Domain\MyProjectTemplate.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Common\Interfaces\" />
+      <Folder Include="Example\" />
+    </ItemGroup>
+
 </Project>

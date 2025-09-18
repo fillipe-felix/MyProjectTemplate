@@ -2,7 +2,7 @@
 
 using MediatR;
 
-namespace MyProjectTemplate.Application.Behaviors;
+namespace MyProjectTemplate.Application.Common.Behaviors;
 
 public class ValidationBehavior<IRequest, TResponse> : IPipelineBehavior<IRequest, TResponse> where IRequest : notnull
 {

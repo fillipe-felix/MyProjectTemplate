@@ -14,5 +14,19 @@
       "description": "Target framework",
       "defaultValue": "net8.0"
     }
-  }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            ".git/**/*",
+            ".idea/**/*",
+            ".template.config/**/*"
+          ]
+        }
+      ]
+    }
+  ]
+
 }

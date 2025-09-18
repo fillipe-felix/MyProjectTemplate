@@ -6,7 +6,7 @@ using MediatR;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using MyProjectTemplate.Application.Behaviors;
+using MyProjectTemplate.Application.Common.Behaviors;
 
 namespace MyProjectTemplate.Application;
 

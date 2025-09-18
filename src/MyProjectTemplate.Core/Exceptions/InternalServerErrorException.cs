@@ -8,4 +8,9 @@ public class InternalServerErrorException : Exception, IException
 {
     public int Code { get; set; } = (int)HttpStatusCode.InternalServerError;
     public override string Message { get; }
+    
+    public InternalServerErrorException(string message)
+    {
+        Message = message;
+    }
 }

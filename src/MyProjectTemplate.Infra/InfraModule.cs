@@ -2,6 +2,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
+using MyProjectTemplate.Domain.Interfaces;
+using MyProjectTemplate.Infra.Repositories;
+
 namespace MyProjectTemplate.Infra;
 
 [ExcludeFromCodeCoverage]
@@ -16,6 +19,7 @@ public static class InfraModule
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<IExampleRepository, ExampleRepository>();
         return services;
     }
 }

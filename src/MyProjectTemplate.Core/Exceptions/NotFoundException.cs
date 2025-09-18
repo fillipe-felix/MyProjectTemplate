@@ -8,4 +8,9 @@ public class NotFoundException : Exception, IException
 {
     public int Code { get; set; } = (int)HttpStatusCode.NotFound;
     public override string Message { get; }
+    
+    public NotFoundException(string message)
+    {
+        Message = message;
+    }
 }
