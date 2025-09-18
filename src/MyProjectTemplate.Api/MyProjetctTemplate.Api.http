@@ -1,6 +1,48 @@
 @MyProjectTemplate.Api_HostAddress = http://localhost:5268
+@ExampleId = 8f9e6f1a-2f6c-4f7a-b6f8-2f7c6a9d1e2b
 
+### GET - Weather (exemplo padrão do template)
 GET {{MyProjectTemplate.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
+### GET - Obter Example por ID
+GET {{MyProjectTemplate.Api_HostAddress}}/api/Example/{{ExampleId}}
+Accept: application/json
+
+### GET - Listar Examples
+GET {{MyProjectTemplate.Api_HostAddress}}/api/Example
+Accept: application/json
+
+### POST - Criar Example
+POST {{MyProjectTemplate.Api_HostAddress}}/api/Example
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Meu Example",
+  "description": "Descrição do Example",
+  "date": "2025-01-31T10:00:00Z",
+  "location": "São Paulo, BR",
+  "latitude": -23.5505,
+  "longitude": -46.6333,
+  "difficulty": "Medium"
+}
+
+### PUT - Atualizar Example
+PUT {{MyProjectTemplate.Api_HostAddress}}/api/Example/{{ExampleId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Example Atualizado",
+  "description": "Descrição atualizada",
+  "date": "2025-02-15T14:30:00Z",
+  "location": "Rio de Janeiro, BR",
+  "latitude": -22.9068,
+  "longitude": -43.1729,
+  "difficulty": "Hard"
+}
+
+### DELETE - Remover Example
+DELETE {{MyProjectTemplate.Api_HostAddress}}/api/Example/{{ExampleId}}
+Accept: application/json
