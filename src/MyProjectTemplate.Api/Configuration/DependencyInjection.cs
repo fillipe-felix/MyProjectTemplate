@@ -25,7 +25,7 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "PedalPoint", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProjectTemplate", Version = "v1" });
 
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
