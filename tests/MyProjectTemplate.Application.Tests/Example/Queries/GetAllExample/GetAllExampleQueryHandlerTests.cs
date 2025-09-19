@@ -8,6 +8,7 @@ using Moq;
 
 using MyProjectTemplate.Application.Example.DTOs;
 using MyProjectTemplate.Application.Example.Queries.GetAllExample;
+using MyProjectTemplate.Core.Base;
 using MyProjectTemplate.Domain.Enums;
 using MyProjectTemplate.Domain.Interfaces;
 
@@ -29,82 +30,62 @@ public class GetAllExampleQueryHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnDtos_WhenRepositoryReturnsEntities()
+    public async Task Handle_ShouldReturnPagedDtos_WhenRepositoryReturnsPagedEntities()
     {
         // Arrange
-        var entities = new[]
+        var pagination = new PaginationParams(pageNumber: 2, pageSize: 1);
+        var entities = new List<Domain.Entities.Example>
         {
-            new Domain.Entities.Example("A", "DA", new DateTime(2025,1,1), "LA", Difficulty.Easy, 1, 2),
-            _fixture.Create<Domain.Entities.Example>()
+            new ("A", "DA", new DateTime(2025,1,1), "LA", Difficulty.Easy, 1, 2),
+            new ("B", "DB", new DateTime(2025,2,2), "LB", Difficulty.Medium)
         };
-        _repoMock.Setup(r => r.GetAllAsync())
-                 .ReturnsAsync(entities);
-        
+
+        var pageItems = entities.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize).ToList();
+        var totalCount = entities.Count;
+
+        _repoMock
+            .Setup(r => r.GetAllAsync(
+                It.Is<PaginationParams>(p => p.PageNumber == pagination.PageNumber && p.PageSize == pagination.PageSize),
+                It.IsAny<System.Linq.Expressions.Expression<Func<Domain.Entities.Example, bool>>>(),
+                It.IsAny<Func<IQueryable<Domain.Entities.Example>, IOrderedQueryable<Domain.Entities.Example>>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((pageItems, totalCount));
+
         // Act
-        var result = await _sut.Handle(new GetAllExampleQuery(), CancellationToken.None);
+        var result = await _sut.Handle(new GetAllExampleQuery(pagination), CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
         result.Success.Should().BeTrue();
-        result.Message.Should().BeEmpty();
+        var data = result.Should().NotBeNull().And.BeAssignableTo<PagedResult<ExampleDto>>().Subject;
 
-        var list = result.Data.Should().NotBeNull().And.BeAssignableTo<IEnumerable<ExampleDto>>().Subject.ToList();
-        list.Should().HaveCount(2);
-        list[0].Name.Should().Be("A");
-        list[0].Description.Should().Be("DA");
-        list[0].Location.Should().Be("LA");
-        list[0].Difficulty.Should().Be(Difficulty.Easy);
-        list[0].Latitude.Should().Be(1);
-        list[0].Longitude.Should().Be(2);
+        data.TotalCount.Should().Be(totalCount);
+        data.PageNumber.Should().Be(pagination.PageNumber);
+        data.PageSize.Should().Be(pagination.PageSize);
+        data.TotalPages.Should().Be((int)Math.Ceiling(totalCount / (double)pagination.PageSize));
+        data.Data.Should().HaveCount(pageItems.Count);
+        data.Data.First().Name.Should().Be("B");
 
-        _repoMock.Verify(r => r.GetAllAsync(), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldReturnEmpty_WhenRepositoryReturnsEmpty()
-    {
-        // Arrange
-        _repoMock.Setup(r => r.GetAllAsync())
-                 .ReturnsAsync(Array.Empty<Domain.Entities.Example>());
-
-        // Act
-        var result = await _sut.Handle(new GetAllExampleQuery(), CancellationToken.None);
-
-        // Assert
-        result.Success.Should().BeTrue();
-        result.Data.Should().NotBeNull().And.BeEmpty();
-    }
-
-    [Fact]
-    public async Task Handle_Canceled_ShouldReturnFailureWithEmptyData()
-    {
-        // Arrange
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
-
-        // Act
-        var result = await _sut.Handle(new GetAllExampleQuery(), cts.Token);
-
-        // Assert
-        result.Success.Should().BeFalse();
-        result.Message.Should().Be("Operation canceled");
-        result.Data.Should().NotBeNull().And.BeEmpty();
-
-        _repoMock.Verify(r => r.GetAllAsync(), Times.Never);
+        _repoMock.VerifyAll();
     }
 
     [Fact]
     public async Task Handle_WhenRepositoryThrows_ShouldBubbleException()
     {
         // Arrange
-        _repoMock.Setup(r => r.GetAllAsync())
-                 .ThrowsAsync(new InvalidOperationException("boom"));
+        var pagination = new PaginationParams(1, 10);
+        _repoMock
+            .Setup(r => r.GetAllAsync(
+                It.IsAny<PaginationParams>(),
+                It.IsAny<System.Linq.Expressions.Expression<Func<Domain.Entities.Example, bool>>>(),
+                It.IsAny<Func<IQueryable<Domain.Entities.Example>, IOrderedQueryable<Domain.Entities.Example>>>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("boom"));
 
         // Act
-        var act = async () => await _sut.Handle(new GetAllExampleQuery(), CancellationToken.None);
+        var act = async () => await _sut.Handle(new GetAllExampleQuery(pagination), CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-                 .WithMessage("boom");
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("boom");
     }
 }

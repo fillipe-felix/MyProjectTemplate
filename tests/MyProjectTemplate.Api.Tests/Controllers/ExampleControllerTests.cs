@@ -71,19 +71,28 @@ public class ExampleControllerTests
     public async Task GetAllAsync_ShouldReturnOk_WithResult()
     {
         // Arrange
-        var data = new List<ExampleDto> { new() { Name = "A" } };
-        var result = new BaseResult<IEnumerable<ExampleDto>>(data);
-        _mediatorMock.Setup(m => m.Send(It.IsAny<GetAllExampleQuery>(), It.IsAny<CancellationToken>()))
-                     .ReturnsAsync(result);
+        var pagination = new PaginationParams(1, 10);
+        var data = new PagedResult<ExampleDto>
+        {
+            Data = new List<ExampleDto> { new() { Name = "A" } },
+            TotalCount = 1,
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.Is<GetAllExampleQuery>(q => q.Pagination.PageNumber == pagination.PageNumber &&
+                                                                       q.Pagination.PageSize == pagination.PageSize),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(data);
 
         // Act
-        var response = await _sut.GetAllAsync(CancellationToken.None);
+        var response = await _sut.GetAllAsync(pagination,CancellationToken.None);
 
         // Assert
         response.Result.Should().BeOfType<OkObjectResult>();
         var ok = (OkObjectResult)response.Result!;
         ok.StatusCode.Should().Be(StatusCodes.Status200OK);
-        ok.Value.Should().Be(result);
+        ok.Value.Should().Be(data);
     }
 
     [Fact]
