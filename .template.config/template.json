@@ -22,7 +22,8 @@
           "exclude": [
             ".git/**/*",
             ".idea/**/*",
-            ".template.config/**/*"
+            ".template.config/**/*",
+            "README.md"
           ]
         }
       ]
