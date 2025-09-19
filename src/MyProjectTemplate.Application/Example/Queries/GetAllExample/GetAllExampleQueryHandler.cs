@@ -9,7 +9,7 @@ using MyProjectTemplate.Domain.Interfaces;
 
 namespace MyProjectTemplate.Application.Example.Queries.GetAllExample;
 
-public class GetAllExampleQueryHandler : IRequestHandler<GetAllExampleQuery, BaseResult<IEnumerable<ExampleDto>>>
+public class GetAllExampleQueryHandler : IRequestHandler<GetAllExampleQuery, PagedResult<ExampleDto>>
 {
     private readonly IExampleRepository _exampleRepository;
     private readonly ILogger<GetAllExampleQueryHandler> _logger;
@@ -20,25 +20,30 @@ public class GetAllExampleQueryHandler : IRequestHandler<GetAllExampleQuery, Bas
         _logger = logger;
     }
 
-    public async Task<BaseResult<IEnumerable<ExampleDto>>> Handle(GetAllExampleQuery request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ExampleDto>> Handle(GetAllExampleQuery request, CancellationToken cancellationToken)
     {
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
             _logger.LogInformation("Handling GetAllExampleQuery");
 
-            var entities = await _exampleRepository.GetAllAsync();
+            var (items, totalCount) = await _exampleRepository.GetAllAsync(
+                request.Pagination,
+                orderBy: q => q.OrderBy(p => p.Id),
+                cancellationToken: cancellationToken
+            );
 
-            var dtos = entities.Select(s => new ExampleDto().ToDTO(s)).ToList();
+            var dtos = items.Select(s => new ExampleDto().ToDTO(s)).ToList();
 
             _logger.LogInformation("GetAllExampleQuery handled successfully: {Count} items", dtos.Count);
 
-            return new BaseResult<IEnumerable<ExampleDto>>(dtos);
-        }
-        catch (OperationCanceledException)
-        {
-            _logger.LogWarning("GetAllExampleQuery handling was canceled.");
-            return new BaseResult<IEnumerable<ExampleDto>>(Enumerable.Empty<ExampleDto>(), false, "Operation canceled");
+            return new PagedResult<ExampleDto>
+            {
+                Data = dtos,
+                TotalCount = totalCount,
+                PageNumber = request.Pagination.PageNumber,
+                PageSize = request.Pagination.PageSize
+            };
         }
         catch (Exception ex)
         {

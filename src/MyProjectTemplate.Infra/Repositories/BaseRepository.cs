@@ -1,7 +1,10 @@
-﻿using Dodo.Primitives;
+﻿using System.Linq.Expressions;
+
+using Dodo.Primitives;
 
 using Microsoft.EntityFrameworkCore;
 
+using MyProjectTemplate.Core.Base;
 using MyProjectTemplate.Domain.Interfaces;
 using MyProjectTemplate.Infra.Data;
 
@@ -23,9 +26,30 @@ public class BaseRepository<T> : IRepository<T> where T : class
         return await DbSet.FindAsync(id);
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<(IEnumerable<T> Items, int TotalCount)> 
+        GetAllAsync(PaginationParams pagination,
+                    Expression<Func<T, bool>>? filter = null,
+                    Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+                    CancellationToken cancellationToken = default)
     {
-        return await DbSet.ToListAsync();
+        IQueryable<T> query = DbSet;
+
+        if (filter != null)
+            query = query.Where(filter);
+
+        if (orderBy != null)
+            query = orderBy(query);
+        else
+            query = query.OrderBy(e => true);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
     }
 
     public virtual async Task<T> AddAsync(T entity)

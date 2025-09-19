@@ -58,7 +58,8 @@ public class ExampleController : ControllerBase
     /// <returns>A <see cref="BaseResult{T}"/> envelope containing <see cref="ExampleDto"/> when found.</returns>
     /// <remarks>
     /// Request example:
-    /// GET api/Example/8f9e6f1a-2f6c-4f7a-b6f8-2f7c6a9d1e2b
+    /// 
+    ///     GET api/Example/8f9e6f1a-2f6c-4f7a-b6f8-2f7c6a9d1e2b
     ///
     /// Possible results:
     /// - 200 OK: Example found and returned in the body.
@@ -85,33 +86,34 @@ public class ExampleController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a list of Examples.
+    /// Returns a paginated list of Examples.
     /// </summary>
+    /// <param name="pagination">Pagination parameters (page number and page size).</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>A <see cref="BaseResult{T}"/> envelope containing a collection of <see cref="ExampleDto"/>.</returns>
+    /// <returns>A <see cref="PagedResult{T}"/> envelope containing a collection of <see cref="ExampleDto"/>.</returns>
     /// <remarks>
     /// Request example:
-    /// GET api/Example
+    /// 
+    ///     GET api/Example
     ///
     /// Possible results:
-    /// - 200 OK: List returned successfully (may be empty).
-    /// - 404 NotFound: No records found (when applicable).
+    /// - 200 OK: Paginated list returned successfully (may be empty).
     /// - 400 BadRequest: Validation error.
     ///
     /// Notes:
-    /// - This endpoint may be extended in the future to provide pagination and filters.
+    /// - This endpoint supports pagination via query string parameters.
     /// </remarks>
-    /// <response code="200">Returns the list of Examples.</response>
-    /// <response code="404">When no records match the criteria.</response>
+    /// <response code="200">Returns the paginated list of Examples.</response>
     /// <response code="400">When there is a validation error in the request.</response>
     [HttpGet]
-    [ProducesResponseType(typeof(BaseResult<IEnumerable<ExampleDto>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(BaseResult<IEnumerable<ExampleDto>>),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(PagedResult<ExampleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<ExampleDto>),StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(BaseErrorResult),StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<BaseResult<IEnumerable<ExampleDto>>>> GetAllAsync(
+        [FromQuery] PaginationParams pagination,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetAllExampleQuery();
+        var query = new GetAllExampleQuery(pagination);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
@@ -128,8 +130,13 @@ public class ExampleController : ControllerBase
     ///     POST api/Example
     ///     Content-Type: application/json
     ///     {
-    ///         "name": "My Example",
-    ///         "description": "Example description"
+    ///         "name": "Updated Example",
+    ///         "description": "Updated description",
+    ///         "date": "2025-09-19T00:48:02.724Z",
+    ///         "location": "street 123, city, state",
+    ///         "latitude": 90,
+    ///         "longitude": -90,
+    ///         "difficulty": 0
     ///     }
     ///
     /// Possible results:
@@ -164,7 +171,12 @@ public class ExampleController : ControllerBase
     ///     Content-Type: application/json
     ///     {
     ///         "name": "Updated Example",
-    ///         "description": "Updated description"
+    ///         "description": "Updated description",
+    ///         "date": "2025-09-19T00:48:02.724Z",
+    ///         "location": "street 123, city, state",
+    ///         "latitude": 90,
+    ///         "longitude": -90,
+    ///         "difficulty": 0
     ///     }
     ///
     /// Rules:
@@ -210,7 +222,8 @@ public class ExampleController : ControllerBase
     /// <returns>204 No Content on success.</returns>
     /// <remarks>
     /// Request example:
-    /// DELETE api/Example/{id}
+    /// 
+    ///     DELETE api/Example/{id}
     ///
     /// Possible results:
     /// - 204 No Content: Successfully removed.

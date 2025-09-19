@@ -5,4 +5,4 @@ using MyProjectTemplate.Core.Base;
 
 namespace MyProjectTemplate.Application.Example.Queries.GetAllExample;
 
-public class GetAllExampleQuery : IRequest<BaseResult<IEnumerable<ExampleDto>>>;
+public record GetAllExampleQuery(PaginationParams Pagination) : IRequest<PagedResult<ExampleDto>>;
