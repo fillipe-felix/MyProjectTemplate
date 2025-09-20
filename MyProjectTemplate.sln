@@ -12,11 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyProjectTemplate.Domain", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyProjectTemplate.Infra", "src\MyProjectTemplate.Infra\MyProjectTemplate.Infra.csproj", "{EF07CFC0-B076-494D-A8AE-53F7026F4A2D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".template.config", ".template.config", "{A33C2D83-0275-4785-800E-27A1A270B93B}"
-	ProjectSection(SolutionItems) = preProject
-		.template.config\template.json = .template.config\template.json
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EFD1077A-F5D8-4957-A71B-4742EE222C63}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyProjectTemplate.Api.Tests", "tests\MyProjectTemplate.Api.Tests\MyProjectTemplate.Api.Tests.csproj", "{E39057A9-8A48-419B-A845-185BFD76FD5C}"
