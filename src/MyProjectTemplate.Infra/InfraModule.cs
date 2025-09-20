@@ -1,9 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
-
+#if (UseEFSqlServer || UseEFPostgres)
 using MyProjectTemplate.Domain.Interfaces;
 using MyProjectTemplate.Infra.Repositories;
+#endif
+#if (UseDapperSqlServer || UseDapperPostgres)
+using MyProjectTemplate.Infra.Adapters;
+using MyProjectTemplate.Infra.Contracts;
+#endif
 
 namespace MyProjectTemplate.Infra;
 
@@ -19,7 +24,12 @@ public static class InfraModule
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+#if (UseEFSqlServer || UseEFPostgres)
         services.AddScoped<IExampleRepository, ExampleRepository>();
+#endif
+#if (UseDapperSqlServer || UseDapperPostgres)  
+        services.AddScoped<IDapperWrapper, DapperWrapper>();
+#endif
         return services;
     }
 }

@@ -13,6 +13,74 @@
       "datatype": "string",
       "description": "Target framework",
       "defaultValue": "net8.0"
+    },
+    "database": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "SqlServer",
+      "choices": [
+        { "choice": "SqlServer" },
+        { "choice": "Postgres" }
+      ],
+      "replaces": "DatabasePlaceholder",
+      "symbols": {
+        "SqlServer": { "type": "define", "define": "SqlServer" },
+        "Postgres": { "type": "define", "define": "Postgres" }
+      }
+    },
+    "orm": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "EF",
+      "choices": [
+        { "choice": "EF" },
+        { "choice": "Dapper" }
+      ],
+      "replaces": "OrmPlaceholder",
+      "symbols": {
+        "EF": { "type": "define", "define": "EF" },
+        "Dapper": { "type": "define", "define": "Dapper" }
+      }
+    },
+    "UseEFSqlServer": {
+      "type": "computed",
+      "value": "(orm == 'EF' && database == 'SqlServer')"
+    },
+    "UseEFPostgres": {
+      "type": "computed",
+      "value": "(orm == 'EF' && database == 'Postgres')"
+    },
+    "UseDapperSqlServer": {
+      "type": "computed",
+      "value": "(orm == 'Dapper' && database == 'SqlServer')"
+    },
+    "UseDapperPostgres": {
+      "type": "computed",
+      "value": "(orm == 'Dapper' && database == 'Postgres')"
+    },
+    "RepositoryInterface": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "IExampleRepository",
+      "replaces": "IExampleDapperRepository"
+    },
+    "RepositoryClass": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "ExampleRepository",
+      "replaces": "ExampleDapperRepository"
+    },
+    "DapperWrapperSqlClass": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "DapperWrapper",
+      "replaces": "DapperWrapperSql"
+    },
+    "DapperWrapperPostgresClass": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "DapperWrapper",
+      "replaces": "DapperWrapperPostgres"
     }
   },
   "sources": [
@@ -25,9 +93,65 @@
             ".template.config/**/*",
             "README.md"
           ]
+        },
+        {
+          "condition": "(orm == 'EF')",
+          "exclude": [
+            "src/MyProjectTemplate.Infra/Adapters/**",
+            "src/MyProjectTemplate.Infra/Contracts/**",
+            "src/MyProjectTemplate.Infra/Repositories/ExampleDapperRepository.cs",
+            "src/MyProjectTemplate.Domain/Interfaces/IExampleDapperRepository.cs",
+            "tests/MyProjectTemplate.Infra.Tests/Repositories/ExampleDapperRepositoryTests.cs"
+          ]
+        },
+        {
+          "condition": "(orm == 'Dapper')",
+          "rename": {
+            "src/MyProjectTemplate.Domain/Interfaces/IExampleDapperRepository.cs": "src/MyProjectTemplate.Domain/Interfaces/IExampleRepository.cs",
+            "tests/MyProjectTemplate.Infra.Tests/Repositories/ExampleDapperRepositoryTests.cs": "tests/MyProjectTemplate.Infra.Tests/Repositories/ExampleRepositoryTests.cs"
+          },
+          "exclude": [
+            "src/MyProjectTemplate.Domain/Interfaces/IExampleRepository.cs",
+            "src/MyProjectTemplate.Domain/Interfaces/IRepository.cs",
+            "src/MyProjectTemplate.Infra/Repositories/BaseRepository.cs",
+            "src/MyProjectTemplate.Infra/Repositories/ExampleRepository.cs",
+            "src/MyProjectTemplate.Infra/Data/**",
+            "tests/MyProjectTemplate.Infra.Tests/Repositories/ExampleRepositoryTests.cs"
+          ]
+        },
+        {
+          "condition": "(orm == 'Dapper' AND database == 'Postgres')",
+          "rename": {
+            "src/MyProjectTemplate.Infra/Adapters/DapperWrapperPostgres.cs": "src/MyProjectTemplate.Infra/Adapters/DapperWrapper.cs"
+          }
+        },
+        {
+          "condition": "(orm == 'Dapper' && database == 'Postgres')",
+          "exclude": [
+            "src/MyProjectTemplate.Infra/Adapters/DapperWrapperSql.cs"
+          ]
+        },
+        {
+          "condition": "(orm == 'Dapper' AND database == 'SqlServer')",
+          "rename": {
+            "src/MyProjectTemplate.Infra/Adapters/DapperWrapperSql.cs": "src/MyProjectTemplate.Infra/Adapters/DapperWrapper.cs"
+          }
+        },
+        {
+          "condition": "(orm == 'Dapper' && database == 'SqlServer')",
+          "exclude": [
+            "src/MyProjectTemplate.Infra/Adapters/DapperWrapperPostgres.cs"
+          ]
         }
       ]
     }
+  ],
+  "primaryOutputs": [
+    {
+      "path": "src/MyProjectTemplate.Api/MyProjectTemplate.Api.csproj"
+    },
+    {
+      "path": "src/MyProjectTemplate.Infra/MyProjectTemplate.Infra.csproj"
+    }
   ]
-
 }

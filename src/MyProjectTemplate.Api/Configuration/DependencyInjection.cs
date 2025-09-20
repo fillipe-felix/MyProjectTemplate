@@ -2,12 +2,25 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 
+#if (UseEFSqlServer || UseEFPostgres)
 using Microsoft.EntityFrameworkCore;
+using MyProjectTemplate.Infra.Data;
+#endif
+
+#if UseDapperSqlServer
+using System.Data;
+using Microsoft.Data.SqlClient;
+#endif
+
+#if UseDapperPostgres
+using System.Data;
+using Npgsql;
+#endif
+
 using Microsoft.OpenApi.Models;
 
 using MyProjectTemplate.Api.Middlewares;
 using MyProjectTemplate.Infra;
-using MyProjectTemplate.Infra.Data;
 
 namespace MyProjectTemplate.Api.Configuration;
 
@@ -49,8 +62,32 @@ public static class DependencyInjection
             .Get<DbRepositoryAdapterConfiguration>();
 
         services.AddSingleton<DbRepositoryAdapterConfiguration>(dbRepositoryAdapterConfiguration);
+        
+        #if UseEFSqlServer
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(dbRepositoryAdapterConfiguration.SqlConnectionString));
+        #endif
 
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dbRepositoryAdapterConfiguration.SqlConnectionString));
+        #if UseEFPostgres
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(dbRepositoryAdapterConfiguration.SqlConnectionString));
+        #endif
+
+        #if UseDapperSqlServer
+        services.AddScoped<IDbConnection>(sp =>
+        {
+            string connString = dbRepositoryAdapterConfiguration.SqlConnectionString;
+            return new SqlConnection(connString);
+        });
+        #endif
+
+        #if UseDapperPostgres
+        services.AddScoped<IDbConnection>(sp =>
+        {
+            string connString = dbRepositoryAdapterConfiguration.SqlConnectionString;
+            return new NpgsqlConnection(connString);
+        });
+        #endif
 
         return services;
     }

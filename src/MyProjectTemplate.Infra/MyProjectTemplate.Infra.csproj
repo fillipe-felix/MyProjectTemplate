@@ -7,14 +7,33 @@
         <RootNamespace>MyProjectTemplate.Infra</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup Condition="'$(orm)' == 'EF' AND '$(database)' == 'SqlServer'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(orm)' == 'EF' AND '$(database)' == 'Postgres'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(orm)' == 'Dapper' AND '$(database)' == 'SqlServer'">
+        <PackageReference Include="Dapper" Version="2.1.66" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(orm)' == 'Dapper' AND '$(database)' == 'Postgres'">
+        <PackageReference Include="Dapper" Version="2.1.66"/>
+        <PackageReference Include="Npgsql" Version="9.0.3"/>
+    </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
-      <PackageReference Include="Npgsql" Version="9.0.3" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+<!--        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1"/>-->
+<!--        <PackageReference Include="Dapper" Version="2.1.66"/>-->
+<!--        <PackageReference Include="Npgsql" Version="9.0.3"/>-->
+<!--        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9"/>-->
+        
+        
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MyProjectTemplate.Domain\MyProjectTemplate.Domain.csproj" />
+        <ProjectReference Include="..\MyProjectTemplate.Domain\MyProjectTemplate.Domain.csproj"/>
     </ItemGroup>
-
 </Project>
