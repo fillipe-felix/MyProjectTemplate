@@ -17,7 +17,8 @@ No diretório onde está o template (a pasta que contém `.template.config/templ
 `dotnet new install .`
 
 Para atualizar após mudanças no template, desinstale e instale novamente:
-`dotnet new uninstall . dotnet new install .`
+`dotnet new uninstall .`
+`dotnet new install .`
 
 ### 2) Instalar via pacote NuGet (opcional, quando publicado)
 
@@ -37,29 +38,57 @@ Você deverá ver algo como:
 
 ## Criar um novo projeto a partir do template
 
-Crie uma nova solução/projeto informando o nome do seu projeto: `dotnet new cleanapi -n MinhaApi`
+Crie uma nova solução/projeto informando o nome do seu projeto:
+`dotnet new cleanapi -n MinhaApi`
 
-Por padrão, o template direciona para .NET 8.0. Se desejar especificar o framework: `dotnet new cleanapi -n MinhaApi --Framework net8.0`
+Por padrão, o template direciona para .NET 8.0. Se desejar especificar o framework:
+`dotnet new cleanapi -n MinhaApi --Framework net8.0`
 
-Entre na pasta gerada e restaure/execute: `cd MinhaApi dotnet restore dotnet build dotnet run`
-
+Entre na pasta gerada e restaure/execute:
+`cd MinhaApi`
+`dotnet restore`
+`dotnet build`
+`dotnet run`
 
 A API deverá iniciar e exibir a URL base no console (normalmente https://localhost:<porta> e/ou http://localhost:<porta>).
 
 ## Parâmetros suportados
 
 - --Framework: Define o Target Framework do projeto (padrão: net8.0).
-  - Exemplo: `--Framework net8.0`
+    - Exemplo: `--Framework net8.0`
 
-Exemplo completo: `dotnet new cleanapi -n MinhaApi --Framework net8.0`
+- --database: Define o banco de dados alvo (padrão: SqlServer).
+    - Opções: `SqlServer`, `Postgres`
+    - Exemplos:
+        - `--database SqlServer`
+        - `--database Postgres`
 
+- --orm: Define o ORM/Camada de acesso a dados (padrão: EF).
+    - Opções: `EF`, `Dapper`
+    - Exemplos:
+        - `--orm EF`
+        - `--orm Dapper`
+
+
+Observações:
+- Combinações comuns:
+    - EF + SqlServer: `--orm EF --database SqlServer`
+    - EF + Postgres: `--orm EF --database Postgres`
+    - Dapper + SqlServer: `--orm Dapper --database SqlServer`
+    - Dapper + Postgres: `--orm Dapper --database Postgres`
+
+Exemplo completo:
+`dotnet new cleanapi -n MinhaApi --orm Dapper --database Postgres `
 
 ## Atualização do template
 
-Se você instalou via diretório local e alterou o template, rode: `dotnet new uninstall . dotnet new install .`
+Se você instalou via diretório local e alterou o template, rode:
+`dotnet new uninstall .`
+`dotnet new install .`
 
-Se instalou via pacote: `dotnet new uninstall Fillipe.CleanArchitecture.Api dotnet new install Fillipe.CleanArchitecture.Api`
-
+Se instalou via pacote:
+`dotnet new uninstall Fillipe.CleanArchitecture.Api`
+`dotnet new install Fillipe.CleanArchitecture.Api`
 
 ## Dicas
 
